@@ -594,6 +594,22 @@
 #else
         result(FlutterMethodNotImplemented);
 #endif
+    }else if([@"setAudioInputDevice" isEqualToString:call.method]){
+#if TARGET_OS_IPHONE
+        NSDictionary* argsMap = call.arguments;
+        NSArray *availableAudioInputs = [[AVAudioSession sharedInstance] availableInputs];
+        NSString* deviceId = argsMap[@"deviceId"];
+        NSLog(@"deviceId: %@", deviceId);
+        for(AVAudioSessionPortDescription *input in availableAudioInputs){
+            NSLog(@"input uid: %@", input.UID);
+            NSString* inputUID = input.UID;
+            if([inputUID isEqualToString: deviceId]){
+                [[AVAudioSession sharedInstance] setPreferredInput:input error:nil];
+            }
+        }
+#else
+        result(FlutterMethodNotImplemented);
+#endif
     } else if ([@"getLocalDescription" isEqualToString:call.method]) {
         NSDictionary* argsMap = call.arguments;
         NSString* peerConnectionId = argsMap[@"peerConnectionId"];
@@ -970,9 +986,10 @@
         NSDictionary* argsMap = call.arguments;
         [self getDesktopSources:argsMap result:result];
     }  else  if ([@"getDesktopSourceThumbnail" isEqualToString:call.method]){
-         NSDictionary* argsMap = call.arguments;
+        NSDictionary* argsMap = call.arguments;
         [self getDesktopSourceThumbnail:argsMap result:result];
-    } else {
+    } 
+    else {
         result(FlutterMethodNotImplemented);
     }
 }

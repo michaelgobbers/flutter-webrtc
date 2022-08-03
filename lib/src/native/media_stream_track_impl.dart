@@ -74,6 +74,15 @@ class MediaStreamTrackNative extends MediaStreamTrack {
   }
 
   @override
+  void setAudioInputDevice(String deviceId) async {
+    print('MediaStreamTrack:setAudioInputDevice $deviceId');
+    await WebRTC.invokeMethod(
+      'setAudioInputDevice',
+      <String, dynamic>{'deviceId': deviceId},
+    );
+  }
+
+  @override
   Future<ByteBuffer> captureFrame() async {
     var filePath = await getTemporaryDirectory();
     await WebRTC.invokeMethod(
