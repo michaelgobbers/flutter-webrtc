@@ -498,12 +498,12 @@ typedef void (^NavigatorUserMediaSuccessCallback)(RTCMediaStream *mediaStream);
                          @"kind": @"videoinput",
                          }];
   }
-  NSArray *audioDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
-  for (AVCaptureDevice *device in audioDevices) {
+  NSArray *availableAudioInputs = [[AVAudioSession sharedInstance] availableInputs];
+  for (AVAudioSessionPortDescription *input in availableAudioInputs) {
     [sources addObject:@{
                          @"facing": @"",
-                         @"deviceId": device.uniqueID,
-                         @"label": device.localizedName,
+                         @"deviceId": input.UID,
+                         @"label": input.portName,
                          @"kind": @"audioinput",
                          }];
   }
