@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -66,6 +67,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -87,6 +89,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
     void setMicrophoneMute(boolean mute);
 
     void setSpeakerphoneOn(boolean on);
+
+    List<AudioDeviceInfo> enumerateAudioDevices();
 
 
   }
@@ -1124,12 +1128,22 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
       }
     }
 
-    ConstraintsMap audio = new ConstraintsMap();
-    audio.putString("label", "Audio");
-    audio.putString("deviceId", "audio-1");
-    audio.putString("facing", "");
-    audio.putString("kind", "audioinput");
-    array.pushMap(audio);
+//    ConstraintsMap audio = new ConstraintsMap();
+//    audio.putString("label", "Audio");
+//    audio.putString("deviceId", "audio-1");
+//    audio.putString("facing", "");
+//    audio.putString("kind", "audioinput");
+//    array.pushMap(audio);
+
+    List<AudioDeviceInfo> audioDevices = audioManager.enumerateAudioDevices();
+    for (int i = 0; i < audioDevices.size(); ++i) {
+      ConstraintsMap deviceAudio = new ConstraintsMap();
+      deviceAudio.putString("label", audioDevices[i].getProductName().toString());
+      deviceAudio.putString("deviceId", audioDevices[i].getId());
+      deviceAudio.putString("facing", "");
+      deviceAudio.putString("kind", "audioinput");
+      array.pushMap(deviceAudio);
+    }
 
     ConstraintsMap map = new ConstraintsMap();
     map.putArray("sources", array.toArrayList());
