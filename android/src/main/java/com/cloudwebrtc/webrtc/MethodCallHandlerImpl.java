@@ -10,6 +10,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.media.AudioManager;
+import android.media.AudioDeviceInfo;
 import android.os.Build;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -27,6 +28,7 @@ import com.cloudwebrtc.webrtc.utils.ConstraintsMap;
 import com.cloudwebrtc.webrtc.utils.EglUtils;
 import com.cloudwebrtc.webrtc.utils.ObjectType;
 import com.cloudwebrtc.webrtc.utils.PermissionUtils;
+import com.cloudwebrtc.webrtc.utils.RTCAudioManager;
 
 import org.webrtc.AudioTrack;
 import org.webrtc.CryptoOptions;
@@ -90,7 +92,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
 
     void setSpeakerphoneOn(boolean on);
 
-    List<AudioDeviceInfo> enumerateAudioDevices();
+    List<RTCAudioManager.AudioDevice> enumerateAudioDevices();
 
 
   }
@@ -1128,18 +1130,13 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
       }
     }
 
-//    ConstraintsMap audio = new ConstraintsMap();
-//    audio.putString("label", "Audio");
-//    audio.putString("deviceId", "audio-1");
-//    audio.putString("facing", "");
-//    audio.putString("kind", "audioinput");
-//    array.pushMap(audio);
-
-    List<AudioDeviceInfo> audioDevices = audioManager.enumerateAudioDevices();
+    List<RTCAudioManager.AudioDevice> audioDevices = audioManager.enumerateAudioDevices();
+    Log.d("loop","audioDevices size" + String.valueOf(audioDevices.size()));
     for (int i = 0; i < audioDevices.size(); ++i) {
+      Log.d("loop","Device: "+audioDevices.get(i).name());
       ConstraintsMap deviceAudio = new ConstraintsMap();
-      deviceAudio.putString("label", audioDevices[i].getProductName().toString());
-      deviceAudio.putString("deviceId", audioDevices[i].getId());
+      deviceAudio.putString("label", audioDevices.get(i).name());
+      deviceAudio.putString("deviceId", audioDevices.get(i).name());
       deviceAudio.putString("facing", "");
       deviceAudio.putString("kind", "audioinput");
       array.pushMap(deviceAudio);

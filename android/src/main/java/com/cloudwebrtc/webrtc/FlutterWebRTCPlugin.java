@@ -3,9 +3,10 @@ package com.cloudwebrtc.webrtc;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.media.AudioManager;
+import android.media.AudioDeviceInfo;
 import android.os.Bundle;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
@@ -22,6 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.view.TextureRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -138,9 +140,11 @@ public class FlutterWebRTCPlugin implements FlutterPlugin, ActivityAware {
                     }
 
                     @Override
-                    public List<AudioDeviceInfo> enumerateAudioDevices(){
+                    public List<RTCAudioManager.AudioDevice> enumerateAudioDevices(){
                         if (rtcAudioManager != null) {
-                            return rtcAudioManager.getAvailableCommunicationDevices();
+                            Log.d("sources", "enumerating devices");
+                            return new ArrayList<RTCAudioManager.AudioDevice>(rtcAudioManager.getAudioDevices());
+
                         }
                         return new ArrayList();
                     }
