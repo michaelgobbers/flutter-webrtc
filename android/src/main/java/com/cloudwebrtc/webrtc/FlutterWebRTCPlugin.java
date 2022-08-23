@@ -142,11 +142,33 @@ public class FlutterWebRTCPlugin implements FlutterPlugin, ActivityAware {
                     @Override
                     public List<RTCAudioManager.AudioDevice> enumerateAudioDevices(){
                         if (rtcAudioManager != null) {
-                            Log.d("sources", "enumerating devices");
                             return new ArrayList<RTCAudioManager.AudioDevice>(rtcAudioManager.getAudioDevices());
 
                         }
                         return new ArrayList();
+                    }
+
+                    @Override
+                    public void setAudioInputDevice(String deviceId){
+                        if (rtcAudioManager != null) {
+                            Set<RTCAudioManager.AudioDevice> devices = rtcAudioManager.getAudioDevices();
+                            RTCAudioManager.AudioDevice selectedDevice = null;
+                            Log.d(TAG, "passed device id: "+ deviceId);
+                            for(RTCAudioManager.AudioDevice device : devices){
+                                Log.d(TAG, "comparing "+ device.toString());
+
+                                if(device.name().equals(deviceId)){
+                                    Log.d(TAG, "match found: "+ deviceId);
+                                    selectedDevice = device;
+                                    break;
+                                }
+                            }
+                            if(selectedDevice != null) {
+                                Log.d(TAG, "Selecting device: "+ deviceId);
+                                rtcAudioManager.selectAudioDevice(selectedDevice);
+                            }
+
+                        }
                     }
                 });
 

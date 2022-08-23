@@ -508,21 +508,21 @@ public class RTCAudioManager {
     // Update the existing audio device set.
     audioDevices = newAudioDevices;
     // Correct user selected audio devices if needed.
-    if (bluetoothManager.getState() == RTCBluetoothManager.State.HEADSET_UNAVAILABLE
-        && userSelectedAudioDevice == AudioDevice.BLUETOOTH) {
-      // If BT is not available, it can't be the user selection.
-      userSelectedAudioDevice = AudioDevice.NONE;
-    }
-    if (hasWiredHeadset && userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE) {
-      // If user selected speaker phone, but then plugged wired headset then make
-      // wired headset as user selected device.
-      userSelectedAudioDevice = AudioDevice.WIRED_HEADSET;
-    }
-    if (!hasWiredHeadset && userSelectedAudioDevice == AudioDevice.WIRED_HEADSET) {
-      // If user selected wired headset, but then unplugged wired headset then make
-      // speaker phone as user selected device.
-      userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
-    }
+//    if (bluetoothManager.getState() == RTCBluetoothManager.State.HEADSET_UNAVAILABLE
+//        && userSelectedAudioDevice == AudioDevice.BLUETOOTH) {
+//      // If BT is not available, it can't be the user selection.
+//      userSelectedAudioDevice = AudioDevice.NONE;
+//    }
+//    if (hasWiredHeadset && userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE) {
+//      // If user selected speaker phone, but then plugged wired headset then make
+//      // wired headset as user selected device.
+//      userSelectedAudioDevice = AudioDevice.WIRED_HEADSET;
+//    }
+//    if (!hasWiredHeadset && userSelectedAudioDevice == AudioDevice.WIRED_HEADSET) {
+//      // If user selected wired headset, but then unplugged wired headset then make
+//      // speaker phone as user selected device.
+//      userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
+//    }
 
     // Need to start Bluetooth if it is available and user either selected it explicitly or
     // user did not select any output device.
@@ -570,17 +570,25 @@ public class RTCAudioManager {
       // device. Note that it is not sufficient that a headset is available;
       // an active SCO channel must also be up and running.
       newAudioDevice = AudioDevice.BLUETOOTH;
-    } else if (hasWiredHeadset) {
+    } else if (userSelectedAudioDevice == AudioDevice.WIRED_HEADSET && hasWiredHeadset) {
       // If a wired headset is connected, but Bluetooth is not, then wired headset is used as
       // audio device.
       newAudioDevice = AudioDevice.WIRED_HEADSET;
-    } else {
+    } else if (userSelectedAudioDevice == AudioDevice.EARPIECE && hasEarpiece()){
+      newAudioDevice = AudioDevice.EARPIECE;
+    }else if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE){
+      newAudioDevice = AudioDevice.SPEAKER_PHONE;
+    }else {
       // No wired headset and no Bluetooth, hence the audio-device list can contain speaker
       // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
       // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
       // depending on the user's selection.
       newAudioDevice = defaultAudioDevice;
     }
+    Log.d(TAG, "audio device debugging: "
+            + "available=" + audioDevices + ", "
+            + "selected=" + newAudioDevice);
+
     // Switch to new device but only if there has been any changes.
     if (newAudioDevice != selectedAudioDevice || audioDeviceSetUpdated) {
       // Do the required device switch.

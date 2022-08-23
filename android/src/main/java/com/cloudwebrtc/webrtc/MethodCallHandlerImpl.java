@@ -94,6 +94,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
 
     List<RTCAudioManager.AudioDevice> enumerateAudioDevices();
 
+    void setAudioInputDevice(String deviceId);
 
   }
 
@@ -485,6 +486,12 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
       case "enableSpeakerphone":
         boolean enable = call.argument("enable");
         audioManager.setSpeakerphoneOn(enable);
+        result.success(null);
+        break;
+      case "setAudioInputDevice":
+        String deviceId = call.argument("deviceId");
+        Log.d(TAG, "Setting audio input device: "+deviceId);
+        audioManager.setAudioInputDevice(deviceId);
         result.success(null);
         break;
       case "getDisplayMedia": {
