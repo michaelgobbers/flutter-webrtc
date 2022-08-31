@@ -610,7 +610,25 @@
 #else
         result(FlutterMethodNotImplemented);
 #endif
-    } else if ([@"getLocalDescription" isEqualToString:call.method]) {
+    }else if([@"getAudioInputDevice" isEqualToString:call.method]){
+#if TARGET_OS_IPHONE
+        AVAudioSessionRouteDescription *currentRoute = [[AVAudioSession sharedInstance] currentRoute];
+        if(currentRoute != nil && currentRoute.inputs.count > 0){
+            
+                
+            result(@{
+             @"facing": @"",
+             @"deviceId": currentRoute.inputs[0].UID,
+             @"label": currentRoute.inputs[0].portName,
+             @"kind": @"audioinput",
+            });
+            
+        }
+#else
+        result(FlutterMethodNotImplemented);
+#endif
+    }
+    else if ([@"getLocalDescription" isEqualToString:call.method]) {
         NSDictionary* argsMap = call.arguments;
         NSString* peerConnectionId = argsMap[@"peerConnectionId"];
         RTCPeerConnection *peerConnection = self.peerConnections[peerConnectionId];

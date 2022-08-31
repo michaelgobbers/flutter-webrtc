@@ -79,4 +79,23 @@ class MediaDeviceNative extends MediaDevices {
         )
         .toList();
   }
+
+  @override
+  Future<MediaDeviceInfo> getCurrentInputDevice() async {
+    try {
+      final response = await WebRTC.invokeMethod(
+        'getAudioInputDevice',
+      );
+      if (response == null) {
+        throw Exception('getAudioInputDevice return null, something wrong');
+      }
+      return MediaDeviceInfo(
+        deviceId: response['deviceId'],
+        label: response['label'],
+        kind: response['kind'],
+      );
+    } on PlatformException catch (e) {
+      throw 'Unable to getCurrentInputDevice: ${e.message}';
+    }
+  }
 }

@@ -96,6 +96,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
 
     void setAudioInputDevice(String deviceId);
 
+    RTCAudioManager.AudioDevice getCurrentInputDevice();
+
   }
 
   static public final String TAG = "FlutterWebRTCPlugin";
@@ -488,9 +490,15 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
         audioManager.setSpeakerphoneOn(enable);
         result.success(null);
         break;
+      case "getAudioInputDevice":
+        Map<String, Object> deviceAudio = new HashMap();
+        deviceAudio.put("label", audioManager.getCurrentInputDevice().name());
+        deviceAudio.put("deviceId", audioManager.getCurrentInputDevice().name());
+        deviceAudio.put("facing", "");
+        deviceAudio.put("kind", "audioinput");
+        result.success(deviceAudio);
       case "setAudioInputDevice":
         String deviceId = call.argument("deviceId");
-        Log.d(TAG, "Setting audio input device: "+deviceId);
         audioManager.setAudioInputDevice(deviceId);
         result.success(null);
         break;

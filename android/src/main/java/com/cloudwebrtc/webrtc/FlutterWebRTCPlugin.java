@@ -13,6 +13,9 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import com.cloudwebrtc.webrtc.MethodCallHandlerImpl.AudioManager;
 import com.cloudwebrtc.webrtc.utils.RTCAudioManager;
+
+import org.webrtc.voiceengine.WebRtcAudioManager;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -169,6 +172,11 @@ public class FlutterWebRTCPlugin implements FlutterPlugin, ActivityAware {
                             }
 
                         }
+                    }
+
+                    @Override
+                    public RTCAudioManager.AudioDevice getCurrentInputDevice(){
+                        return rtcAudioManager.getSelectedAudioDevice();
                     }
                 });
 
