@@ -497,6 +497,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler, StateProvider {
         deviceAudio.put("facing", "");
         deviceAudio.put("kind", "audioinput");
         result.success(deviceAudio);
+        break;
       case "setAudioInputDevice":
         String deviceId = call.argument("deviceId");
         audioManager.setAudioInputDevice(deviceId);
